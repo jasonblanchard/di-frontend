@@ -5,7 +5,6 @@ import { useRecoilValue } from 'recoil';
 import { idTokenState } from '../auth/state';
 
 import entryPreview from './entryPreview';
-import getCsrfToken from '../utils/getCsrfToken';
 
 interface EntryPreview {
   id: string;

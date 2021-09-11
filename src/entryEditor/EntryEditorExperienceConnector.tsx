@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import debounce from 'lodash.debounce';
 import { NotebookClient } from "@jasonblanchard/di-apis"
-import { useRecoilState} from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { idTokenState } from '../auth/state';
 
 import { Variant as SaveStatusIndicatorVariant } from '../components/SaveStatusIndicator';
-import getCsrfToken from '../utils/getCsrfToken';
 import toastState from '../toast/atom';
 import DeleteEntryModal from '../components/DeleteEntryModal';
 
@@ -35,16 +35,6 @@ interface Entry {
   updatedAt?: string;
 }
 
-const csrfToken = getCsrfToken();
-
-const path = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ":" : ""}${window.location.port ? window.location.port : ""}/notebook`
-
-const notebookClient = new NotebookClient(path)
-notebookClient.setRequestHeadersHandler(headers => ({
-  ...headers,
-  'CSRF-Token': csrfToken,
-}));
-
 function mapSaveStateToSaveStatusIndicatorVariant(isSavingEntry: boolean, didSaveEntryFail: boolean) {
   if (didSaveEntryFail) return SaveStatusIndicatorVariant.Error;
   if (isSavingEntry) return SaveStatusIndicatorVariant.Saving;
@@ -59,6 +49,14 @@ export default function EntryEditorExperienceConnector({ children, selectedEntry
   // const [debouncedSaveEntry, setDebouncedSaveEntry] = useState<(({ text }: { text: string; }) => Promise<void>)>();
   const [debouncedSaveEntry, setDebouncedSaveEntry] = useState<any>();
   const [, setToastText] = useRecoilState(toastState) 
+  const idToken = useRecoilValue(idTokenState);
+
+  const path = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ":" : ""}${window.location.port ? window.location.port : ""}/api`
+  const notebookClient = new NotebookClient(path)
+  notebookClient.setRequestHeadersHandler(headers => ({
+    ...headers,
+    'Authorization': `Bearer ${idToken}`,
+  }));
 
   const history = useHistory();
 
