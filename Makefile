@@ -4,7 +4,7 @@ provision:
 	pulumi up
 
 build:
-	PUBLIC_URL=https://$$(pulumi stack output bucketDomainName) npm run build
+	PUBLIC_URL=https://di-frontend-aad319a.s3.amazonaws.com npm run build
 
 push: build
-	aws s3 sync ./build s3://$$(pulumi stack output bucket) --acl public-read
+	aws s3 sync ./build s3://di-frontend-aad319a --acl public-read
