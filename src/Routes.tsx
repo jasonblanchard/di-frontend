@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Switch,
     Route,
+    Redirect,
 } from "react-router-dom";
 import { QueryParamProvider } from 'use-query-params';
 
@@ -17,6 +18,9 @@ export default function Routes() {
         <>
             <QueryParamProvider ReactRouterRoute={Route}>
                 <Switch>
+                    <Route path="/" exact>
+                        <Redirect to="/login" />
+                    </Route>
                     <Route path="/login" exact>
                         <LoginPage />
                     </Route>

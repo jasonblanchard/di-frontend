@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import { idTokenState } from './state';
 
@@ -10,11 +10,13 @@ declare global {
 
 export default function LoginPage() {
     const [, setIdToken] = useRecoilState(idTokenState);
+    const [didSetToken, setDidSetToken] = useState(false);
 
     useEffect(() => {
         function handleCredentialResponse(response: any) {
             console.log(response.credential);
             setIdToken(response.credential);
+            setDidSetToken(true);
         }
 
         window.google.accounts.id.initialize({
@@ -34,10 +36,10 @@ export default function LoginPage() {
 
     return (
         <div>
-            {/* <div id="buttonDiv"></div> */}
-            LoginPage
+            {didSetToken && <Redirect to="/workspace" />}
+            <div id="buttonDiv"></div>
             <div>
-                <Link to="/workspace">Workspace</Link>
+                {didSetToken && <Link to="/workspace">Workspace</Link>}
             </div>
         </div>
     )
