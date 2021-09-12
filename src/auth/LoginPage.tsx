@@ -14,7 +14,6 @@ export default function LoginPage() {
 
     useEffect(() => {
         function handleCredentialResponse(response: any) {
-            console.log(response.credential);
             setIdToken(response.credential);
             setDidSetToken(true);
         }
