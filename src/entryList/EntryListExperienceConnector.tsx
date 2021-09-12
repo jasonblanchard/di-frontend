@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useHistory } from "react-router-dom";
 import { NotebookClient, v2ListEntriesResponse } from "@jasonblanchard/di-apis"
 import { useRecoilValue } from 'recoil';
@@ -39,11 +39,14 @@ export default function EntryListExperienceConnector({ children, patches }: Entr
   const idToken = useRecoilValue(idTokenState);
 
   const path = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ":" : ""}${window.location.port ? window.location.port : ""}/api`
-  const notebookClient = new NotebookClient(path)
-  notebookClient.setRequestHeadersHandler(headers => ({
-    ...headers,
-    'Authorization': `Bearer ${idToken}`,
-  }));
+  const notebookClient = useMemo(() => {
+    const client = new NotebookClient(path)
+    client.setRequestHeadersHandler(headers => ({
+      ...headers,
+      'Authorization': `Bearer ${idToken}`,
+    }));
+    return client;
+  }, [idToken, path]);
 
   useEffect(() => {
     async function fetchEntries() {
@@ -63,7 +66,7 @@ export default function EntryListExperienceConnector({ children, patches }: Entr
       setIsEntriesLoading(false);
     }
     fetchEntries();
-  }, []);
+  }, [notebookClient]);
 
   async function onClickNew() {
     const { body: entry } = await notebookClient.Notebook_CreateEntry({

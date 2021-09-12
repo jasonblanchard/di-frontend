@@ -29,7 +29,7 @@ interface VelocityOverviewConnectorRenderProps {
 // const csrfToken = getCsrfToken();
 
 export default function VelocityOverviewExperienceConnector({ children }: VelocityOverviewExperienceConnectorProps) {
-  const [velocities, setVelocities] = useState<Velocity[][]>([]);
+  const [velocities] = useState<Velocity[][]>([]);
   const [isVelocityOverviewLoading, setIsVelocityOverviewLoading] = useState(false);
 
   useEffect(() => {

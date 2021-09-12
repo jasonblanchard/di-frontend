@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from "react-router-dom";
 import debounce from 'lodash.debounce';
 import { NotebookClient } from "@jasonblanchard/di-apis"
@@ -52,11 +52,14 @@ export default function EntryEditorExperienceConnector({ children, selectedEntry
   const idToken = useRecoilValue(idTokenState);
 
   const path = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ":" : ""}${window.location.port ? window.location.port : ""}/api`
-  const notebookClient = new NotebookClient(path)
-  notebookClient.setRequestHeadersHandler(headers => ({
-    ...headers,
-    'Authorization': `Bearer ${idToken}`,
-  }));
+  const notebookClient = useMemo(() => {
+    const client = new NotebookClient(path)
+    client.setRequestHeadersHandler(headers => ({
+      ...headers,
+      'Authorization': `Bearer ${idToken}`,
+    }));
+    return client;
+  }, [idToken, path])
 
   const history = useHistory();
 
@@ -75,9 +78,9 @@ export default function EntryEditorExperienceConnector({ children, selectedEntry
       setIsLoadingEntry(false);
     }
     fetchEntry();
-  }, [selectedEntryId]);
+  }, [selectedEntryId, notebookClient]);
 
-  async function saveEntry({ text }: { text: string }) {
+  const saveEntry = useCallback(async function saveEntry({ text }: { text: string }) {
     setDidSaveEntryFiled(false);
     setIsSavingEntry(true);
     try {
@@ -94,14 +97,14 @@ export default function EntryEditorExperienceConnector({ children, selectedEntry
       setIsSavingEntry(false);
       setDidSaveEntryFiled(true);
     }
-  }
+  }, [notebookClient, selectedEntryId])
 
   // Only create the debounced save on first render.
   useEffect(() => {
     const debouncedSaveEntry = debounce(saveEntry, 1000, { maxWait: 10000 });
     // Need to use function syntax, otherwise the setter tries to immediately invoke it.
     setDebouncedSaveEntry(() => debouncedSaveEntry);
-  }, [selectedEntryId]);
+  }, [selectedEntryId, saveEntry]);
 
   async function undeleteEntry() {
     const id = selectedEntryId || "";

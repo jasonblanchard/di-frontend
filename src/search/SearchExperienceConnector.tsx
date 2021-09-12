@@ -18,17 +18,6 @@ interface SearchExperienceConnectorRenderProps {
     onClickMore: () => void
 }
 
-const entries = [
-    {
-        id: '123',
-        text: 'Put captain Solo in the cargo hold'
-    },
-    {
-        id: '234',
-        text: 'repeat the ships are lost'
-    }
-]
-
 const csrfToken = getCsrfToken();
 const path = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ":" : ""}${window.location.port ? window.location.port : ""}/notebook`
 const notebookClient = new NotebookClient(path)
@@ -39,7 +28,7 @@ notebookClient.setRequestHeadersHandler(headers => ({
 
 export default function SearchExperienceConnector({ children }: SearchExperienceConnectorProps) {
     const [entries, setEntries] = useState<Entry[]>([]);
-    const [isEntriesLoading, setIsEntriesLoading] = useState(false);
+    const [, setIsEntriesLoading] = useState(false);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [nextCursor, setNextCursor] = useState("");
 

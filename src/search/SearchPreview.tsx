@@ -16,7 +16,7 @@ const Highlight = styled.span`
     background: yellow;
 `;
 
-export default function({ query, text, id }: SearchPreviewProps) {
+export default function SearchPreview({ query, text, id }: SearchPreviewProps) {
     const startToken = "%%%";
     const endToken = "%%%";
     // TODO: Handle multiple matches
@@ -27,7 +27,7 @@ export default function({ query, text, id }: SearchPreviewProps) {
     const parts = buffer.split(startToken)
     // TODO: Handle multiple matches... batch by 3? [[before match, match, after match]]
     const result = parts.reduce<React.ReactNode[]>((memo, string, index) => {
-        if (index % 2 == 0) {
+        if (index % 2 === 0) {
             return [
                 ...memo,
                 (<span key={index}>{string}</span>)

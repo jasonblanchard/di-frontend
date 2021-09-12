@@ -35,13 +35,13 @@ const Main = styled.div`
 `;
 
 
-interface SideDrawerLayout {
+interface SideDrawerLayoutProps {
   isSidebarCollapsed: boolean;
   children: React.ReactNode;
   onToggleCollapse: () => void;
 }
 
-const SideDrawerLayout: FunctionComponent<SideDrawerLayout> = ({ isSidebarCollapsed, children, onToggleCollapse }) => {
+const SideDrawerLayout: FunctionComponent<SideDrawerLayoutProps> = ({ isSidebarCollapsed, children, onToggleCollapse }) => {
   const childrenArray = Children.toArray(children);
 
   return (
