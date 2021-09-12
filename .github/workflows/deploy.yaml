@@ -1,3 +1,8 @@
+name: deploy on merge
+on:
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     name: Deploy to S3
